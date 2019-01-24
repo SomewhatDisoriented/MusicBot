@@ -1278,8 +1278,7 @@ class MusicBot(discord.Client):
         it will use the metadata (e.g song name and artist) to find a YouTube
         equivalent of the song. Streaming from Spotify is not possible.
         """
-
-        cmd_summon(self, channel, channel.guild, author, author.voice.channel)
+        print("cmd_play called")
 
         song_url = song_url.strip('<>')
 
@@ -1887,7 +1886,7 @@ class MusicBot(discord.Client):
 
         log.info("Joining {0.guild.name}/{0.name}".format(author.voice.channel))
 
-        return None
+        return Response(self.str.get('cmd-summon-reply', 'Connected to `{0.name}`').format(author.voice.channel))
 
     async def cmd_pause(self, player):
         """
