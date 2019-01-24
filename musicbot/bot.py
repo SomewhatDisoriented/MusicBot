@@ -2653,7 +2653,7 @@ class MusicBot(discord.Client):
             if params.pop('player', None):
                 if message.guild.id not in self.players and message.author.voice:
                     print("Creating player for voice channel")
-                    handler_kwargs['player'] = await self.get_player(message.author.voice.voice_channel, create=True)
+                    handler_kwargs['player'] = await self.get_player(message.author.voice.channel, create=True)
                 else:
                     handler_kwargs['player'] = await self.get_player(message.channel)
 
