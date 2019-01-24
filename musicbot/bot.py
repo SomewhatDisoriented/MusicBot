@@ -404,7 +404,7 @@ class MusicBot(discord.Client):
     def get_player_in(self, guild:discord.Guild) -> MusicPlayer:
         return self.players.get(guild.id)
 
-    async def get_player(self, channel, create=False, *, deserialize=False) -> MusicPlayer:
+    async def get_player(self, channel, create=True, *, deserialize=False) -> MusicPlayer:
         guild = channel.guild
 
         async with self.aiolocks[_func_() + ':' + str(guild.id)]:
