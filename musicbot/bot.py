@@ -1278,7 +1278,6 @@ class MusicBot(discord.Client):
         it will use the metadata (e.g song name and artist) to find a YouTube
         equivalent of the song. Streaming from Spotify is not possible.
         """
-        print("cmd_play called")
 
         song_url = song_url.strip('<>')
 
@@ -2652,7 +2651,11 @@ class MusicBot(discord.Client):
                 handler_kwargs['guild'] = message.guild
 
             if params.pop('player', None):
-                handler_kwargs['player'] = await self.get_player(message.channel)
+                if message.guild.id not in self.players and message.author.voice:
+                    print("Creating player for voice channel")
+                    handler_kwargs['player'] = await self.get_player(message.author.voice.voice_channel, create=True)
+                else:
+                    handler_kwargs['player'] = await self.get_player(message.channel)
 
             if params.pop('_player', None):
                 handler_kwargs['_player'] = self.get_player_in(message.guild)
