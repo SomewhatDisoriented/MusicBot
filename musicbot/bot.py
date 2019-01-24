@@ -404,7 +404,7 @@ class MusicBot(discord.Client):
     def get_player_in(self, guild:discord.Guild) -> MusicPlayer:
         return self.players.get(guild.id)
 
-    async def get_player(self, channel, create=True, *, deserialize=False) -> MusicPlayer:
+    async def get_player(self, channel, create=False, *, deserialize=False) -> MusicPlayer:
         guild = channel.guild
 
         async with self.aiolocks[_func_() + ':' + str(guild.id)]:
@@ -1279,6 +1279,8 @@ class MusicBot(discord.Client):
         equivalent of the song. Streaming from Spotify is not possible.
         """
 
+        cmd_summon(self, channel, channel.guild, author, author.voice.channel)
+
         song_url = song_url.strip('<>')
 
         await self.send_typing(channel)
@@ -1885,7 +1887,7 @@ class MusicBot(discord.Client):
 
         log.info("Joining {0.guild.name}/{0.name}".format(author.voice.channel))
 
-        return Response(self.str.get('cmd-summon-reply', 'Connected to `{0.name}`').format(author.voice.channel))
+        return None
 
     async def cmd_pause(self, player):
         """
