@@ -427,7 +427,6 @@ class MusicBot(discord.Client):
                     voice_client = await self.get_voice_client(forUser.voice.channel)
                 else:
                     voice_client = await self.get_voice_client(channel)
-                
 
                 playlist = Playlist(self)
                 player = MusicPlayer(self, voice_client, playlist)
@@ -1286,6 +1285,10 @@ class MusicBot(discord.Client):
         song_url = song_url.strip('<>')
 
         await self.send_typing(channel)
+        
+        voice_client = self.voice_client_in(author.voice.channel.guild)
+        if voice_client:
+            await voice_client.move_to(author.voice.channel)
 
         if leftover_args:
             song_url = ' '.join([song_url, *leftover_args])
