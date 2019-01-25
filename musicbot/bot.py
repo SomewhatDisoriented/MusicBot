@@ -404,7 +404,7 @@ class MusicBot(discord.Client):
     def get_player_in(self, guild:discord.Guild) -> MusicPlayer:
         return self.players.get(guild.id)
 
-    async def get_player(self, channel, create=False, *, deserialize=False) -> MusicPlayer:
+    async def get_player(self, channel, create=False, forUser=None, *, deserialize=False) -> MusicPlayer:
         guild = channel.guild
 
         async with self.aiolocks[_func_() + ':' + str(guild.id)]:
@@ -423,7 +423,11 @@ class MusicBot(discord.Client):
                         'The bot is not in a voice channel.  '
                         'Use %ssummon to summon it to your voice channel.' % self.config.command_prefix)
 
-                voice_client = await self.get_voice_client(channel)
+                if forUser and forUser.voice:
+                    voice_client = await self.get_voice_client(forUser.voice.channel)
+                else:
+                    voice_client = await self.get_voice_client(channel)
+                
 
                 playlist = Playlist(self)
                 player = MusicPlayer(self, voice_client, playlist)
@@ -2651,11 +2655,7 @@ class MusicBot(discord.Client):
                 handler_kwargs['guild'] = message.guild
 
             if params.pop('player', None):
-                if message.guild.id not in self.players and message.author.voice:
-                    print("Creating player for voice channel")
-                    handler_kwargs['player'] = await self.get_player(message.author.voice.channel, create=True)
-                else:
-                    handler_kwargs['player'] = await self.get_player(message.channel)
+                handler_kwargs['player'] = await self.get_player(message.channel, create=True, forUser=message.author)
 
             if params.pop('_player', None):
                 handler_kwargs['_player'] = self.get_player_in(message.guild)
