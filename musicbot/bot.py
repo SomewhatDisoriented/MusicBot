@@ -484,8 +484,8 @@ class MusicBot(discord.Client):
                 newmsg = '%s - your song `%s` is now playing in `%s`!' % (
                     entry.meta['author'].mention, entry.title, player.voice_client.channel.name)
             else:
-                newmsg = 'Now playing in `%s`: `%s` added by `%s`' % (
-                    player.voice_client.channel.name, entry.title, entry.meta['author'].name)
+                newmsg = 'Now playing `%s` added by `%s`' % (
+                    entry.title, entry.meta['author'].name)
 
             if self.server_specific_data[channel.guild]['last_np_msg']:
                 self.server_specific_data[channel.guild]['last_np_msg'] = await self.safe_edit_message(last_np_msg, newmsg, send_if_fail=True)
