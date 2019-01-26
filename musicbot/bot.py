@@ -28,7 +28,7 @@ from . import exceptions
 from . import downloader
 
 from .playlist import Playlist
-from .player import MusicPlayer
+from .player import MusicPlayer, MusicPlayerState
 from .entry import StreamPlaylistEntry
 from .opus_loader import load_opus_lib
 from .config import Config, ConfigDefaults
@@ -506,6 +506,14 @@ class MusicBot(discord.Client):
     async def on_player_stop(self, player, **_):
         log.debug('Running on_player_stop')
         await self.update_now_playing_status()
+
+        # Disconnect after some inactivity
+        stopTime = time.time()
+        player.last_stop_time = stopTime
+        await asyncio.sleep(10)
+        if player.state == MusicPlayerState.STOPPED and stopTime == player.last_stop_time:
+            await self.disconnect_voice_client(player.voice_client.channel.guild)
+
 
     async def on_player_finished_playing(self, player, **_):
         log.debug('Running on_player_finished_playing')
